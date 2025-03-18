@@ -1,17 +1,18 @@
 {
 	"compilerOptions": {
-		"outDir": "/dist/",
+		"outDir": "./dist/",
 		"noImplicitAny": true,
 		"module": "ESNext",
 		"target": "es6",
-		"jsx": "react",
+		"jsx": "react-jsx",
 		"allowJs": true,
 		"moduleResolution": "node",
 		//нужныы, чтобы правильно обрабатывать импорты
 		"allowSyntheticDefaultImports": true, // позволяет работать с CommonJs, получаем объект
 		"esModuleInterop": true // уходим от * as , подменяем отсутствующий export default
 	},
-
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"],
 	"ts-node": {
 		"compilerOptions": {
 			"module": "CommonJS"

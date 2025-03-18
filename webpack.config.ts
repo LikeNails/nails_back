@@ -15,18 +15,36 @@ interface EnvVariables {
 	port: number
 }
 
-export default (env: any) => {
+export default (env: EnvVariables) => {
+
+	const isDev = env.mode === 'development'
+	
 	const config: webpack.Configuration = {
-		entry: path.resolve(__dirname, 'src', 'index.ts'), // Точка входа проекта,
-		devServer: {
+		entry: path.resolve(__dirname, 'src', 'index.tsx'), // Точка входа проекта,
+		devtool: isDev && 'inline-source-map',
+		devServer: isDev ? {
 			static: {
 				directory: path.join(__dirname, 'public'),
 			},
 			compress: true,
 			port: env.port ?? 3000,
-		},
+		}:undefined,
+		
 		module: {
 			rules: [
+				//лоудеры по порядку воздействуют на код, преобразуя его
+				//ts-loader умеет работать с JSX
+				{
+					test: /\.s[ac]ss$/i,
+					use: [
+						// Creates `style` nodes from JS strings
+						"style-loader",
+						// Translates CSS into CommonJS
+						"css-loader",
+						// Compiles Sass to CSS
+						"sass-loader",
+					],
+				},
 				{
 					test: /\.tsx?$/,
 					use: 'ts-loader',
@@ -39,17 +57,18 @@ export default (env: any) => {
 		},
 		output: {
 			path: path.resolve(__dirname, 'dist'), // Директория, в которую будет собираться проект
-			filename: '[name].[contenthash].ts',
+			filename: 'bundle.[contenthash].js',
 			clean: true, // Очищает старые файлы при повторной сборке проекта
 		},
 
 		// Подключение плагинов, в параметр-массив передаются экземпляры объектов
 		plugins: [
-			new EslintPlugin(),
+			isDev && new EslintPlugin(),
 			new HtmlWebpackPlugin({
 				template: path.resolve(__dirname, 'public', 'index.html'),
 			}),
-		],
+		].filter(Boolean),
+		
 	}
 
 	return config
