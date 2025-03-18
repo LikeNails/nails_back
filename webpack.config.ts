@@ -16,37 +16,27 @@ interface EnvVariables {
 }
 
 export default (env: EnvVariables) => {
-
 	const isDev = env.mode === 'development'
-	
+
 	const config: webpack.Configuration = {
 		entry: path.resolve(__dirname, 'src', 'index.tsx'), // Точка входа проекта,
 		devtool: isDev && 'inline-source-map',
-		devServer: isDev ? {
-			static: {
-				directory: path.join(__dirname, 'public'),
-			},
-			compress: true,
-			port: env.port ?? 3000,
-		}:undefined,
-		
+		devServer: isDev
+			? {
+					static: {
+						directory: path.join(__dirname, 'public'),
+					},
+					compress: true,
+					port: env.port ?? 3000,
+				}
+			: undefined,
+
 		module: {
 			rules: [
 				//лоудеры по порядку воздействуют на код, преобразуя его
 				//ts-loader умеет работать с JSX
 				{
-					test: /\.s[ac]ss$/i,
-					use: [
-						// Creates `style` nodes from JS strings
-						"style-loader",
-						// Translates CSS into CommonJS
-						"css-loader",
-						// Compiles Sass to CSS
-						"sass-loader",
-					],
-				},
-				{
-					test: /\.tsx?$/,
+					test: /\.ts?$/,
 					use: 'ts-loader',
 					exclude: /node_modules/,
 				},
@@ -68,7 +58,6 @@ export default (env: EnvVariables) => {
 				template: path.resolve(__dirname, 'public', 'index.html'),
 			}),
 		].filter(Boolean),
-		
 	}
 
 	return config
