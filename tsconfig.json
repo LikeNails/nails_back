@@ -14,8 +14,7 @@
 	},
 	"include": [
 		"src/**/*",
-		"./*.js",
-		"webpack.config.ts"
+		"./*.js"
 	],
 	"exclude": ["node_modules", "dist"],
 	"ts-node": {

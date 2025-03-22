@@ -1,5 +1,7 @@
 import Response from '../Response'
 
-type LoginResponse = Response & {}
+type LoginResponse = {
+	token: string
+}
 
 export default LoginResponse

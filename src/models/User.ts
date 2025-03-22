@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model, ObjectId} from 'mongoose';
+import bcrypt from 'bcryptjs'
 
 type TBio = {
 	first: string,
@@ -6,13 +7,18 @@ type TBio = {
 	family: string,
 }
 
-type TUser = {
+interface TUserMethods {
+	comparePassword(candidatePassword: string): Promise<boolean>;
+}
+
+interface TUser extends Document, TUserMethods{
 	_id: ObjectId;
 	email: string;
 	bio: TBio,
 	password_hash: string,
 	type: 'admin' | 'student' | 'teacher',
-	group?: number
+	group?: number,
+	created_at: Date,
 }
 
 const userSchema = new Schema<TUser>(
@@ -48,10 +54,27 @@ const userSchema = new Schema<TUser>(
 		type: Number,
 		required: false,
 	},
+	created_at: {
+		type: Date,
+	}
 },
 {
 	timestamps: true
 })
+
+//Хэширование пароля
+userSchema.pre('save', async function (next) {
+	if (!this.isModified('password_hash')) return next();
+	this.password_hash = await bcrypt.hash(this.password_hash, 10);
+	next();
+});
+
+//Метод сравнения паролей
+userSchema.methods.comparePassword = async function (candidatePassword:string) {
+	return await bcrypt.compare(candidatePassword, this.password);
+};  
+
+
 
 const User: Model<TUser> = mongoose.model<TUser>('User', userSchema);
 export default User;
