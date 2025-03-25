@@ -24,14 +24,17 @@ const accessLogStream = fs.createWriteStream(path.join(logDirectory, 'access.log
 app.use(morgan('combined', { stream: accessLogStream }));
 
 app.use(express.json())
+app.use(morgan('combined', {stream: accessLogStream}))
 app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
 
 
-app.use(middlewares.notFound)
-app.use(middlewares.errorHandler)
-
 app.use('/api/v1', api)
+
+app.use(middlewares.errorHandler)
+app.use(middlewares.notFound)
+
+
 
 export default app

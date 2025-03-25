@@ -17,7 +17,7 @@ export type RegisterResponse = {
 }
 
 router.post(
-	'/register', 
+	'', 
 	async(
 		req: express.Request<{},{}, RegisterRequestBody>,
 		res: express.Response<RegisterResponse>,
@@ -31,7 +31,7 @@ router.post(
 				return next(new Error('User is already created'))
 			}
 			
-			const user = new User({email, password, type})
+			const user = new User({email, password_hash: password, type})
 			const accessToken = generateAccessToken(user._id)
 			const refreshToken = generateRefreshToken(user._id)
 			
@@ -40,7 +40,7 @@ router.post(
 			res.status(201).json({accessToken, refreshToken});
 		} catch(error) {
 			res.status(500)
-			return next(new Error('Server error'))
+			return next(new Error(`Server error \n ${error}`))
 		}
 	}
 )

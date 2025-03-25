@@ -4,7 +4,7 @@ import express, { NextFunction } from 'express'
 const router = express.Router()
 
 router.get(
-	'/',
+	['/',''],
 	async (
 		req: express.Request,
 		res: express.Response,
@@ -13,7 +13,7 @@ router.get(
 	{
 		try{
 			res.status(200).json({message: 'all is ok'})
-		}catch(error){
+		} catch (error) {
 			next(error)
 		}
 	}
