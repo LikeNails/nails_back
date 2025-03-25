@@ -1,7 +1,8 @@
 import Response from '../Response'
 
 type LoginResponse = {
-	token: string
+	accessToken: string,
+	refreshToken: string
 }
 
 export default LoginResponse

@@ -1,12 +1,10 @@
 import express, { NextFunction } from 'express'
-import { authMiddleware } from '../../middlewares'
 
 
 const router = express.Router()
 
-router.post(
-	'/test',
-	authMiddleware,
+router.get(
+	'/',
 	async (
 		req: express.Request,
 		res: express.Response,

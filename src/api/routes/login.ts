@@ -5,13 +5,11 @@ import jwt from 'jsonwebtoken'
 import * as middlewares from '../../middlewares'
 import Requset from 'express'
 import User from '../../models/User'
-import generateToken from '../utils/generateToken'
+import { generateAccessToken, generateRefreshToken } from '../utils/generateToken'
 const router = express.Router()
-
 
 router.post(
 	'/login', 
-	middlewares.authMiddleware, 
 	async (
 		req: express.Request<{},{}, LoginRequestBody>,
 		res: express.Response<LoginResponse>,
@@ -31,8 +29,13 @@ router.post(
 				return next(new Error('Uncorrect email or password'))
 			}
 			
-			const token = generateToken(user._id);
-			res.json({token});
+			const accessToken = generateAccessToken(user._id)
+			const refreshToken = generateRefreshToken(user._id)
+			
+			user.refresh_token = refreshToken;
+			await user.save();
+			
+			res.json({accessToken, refreshToken});
 		} catch(error){
 			res.status(500);
 			return next(new Error('Server error'))

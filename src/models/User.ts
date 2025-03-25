@@ -14,7 +14,8 @@ interface TUserMethods {
 interface TUser extends Document, TUserMethods{
 	_id: ObjectId;
 	email: string;
-	bio: TBio,
+	bio?: TBio,
+	refresh_token?: string | null,
 	password_hash: string,
 	type: 'admin' | 'student' | 'teacher',
 	group?: number,
@@ -31,16 +32,16 @@ const userSchema = new Schema<TUser>(
 	bio: {
 		first: {
 			type: String,
-			required: true,
 		},
 		second: {
 			type: String,
-			required: false,
 		},
 		family: {
 			type: String,
-			required: true,
 		}
+	},
+	refresh_token: {
+		type: String,
 	},
 	password_hash: {
 		type: String,
@@ -52,7 +53,6 @@ const userSchema = new Schema<TUser>(
 	},
 	group: {
 		type: Number,
-		required: false,
 	},
 	created_at: {
 		type: Date,

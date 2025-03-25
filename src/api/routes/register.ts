@@ -1,11 +1,20 @@
 import express, { NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import { RegisterRequestBody} from '../types/Register/RegisterRequestBody'
-import { RegisterResponse } from '../types/Register/RegisterResponse'
 import User from '../../models/User'
-import generateToken from '../utils/generateToken'
+import {generateAccessToken, generateRefreshToken} from '../utils/generateToken'
 
 const router = express.Router()
+
+export type RegisterRequestBody = {
+	email: string,
+	password: string,
+	type: 'admin' | 'student' | 'teacher',
+}
+
+export type RegisterResponse = {
+	accessToken: string,
+	refreshToken: string
+}
 
 router.post(
 	'/register', 
@@ -15,21 +24,25 @@ router.post(
 		next: NextFunction,
 	) => {
 		try{
-			const {email, password} = req.body
+			const {email, password, type} = req.body
 			const existingUser = await User.findOne({ email })
 			if (existingUser){
 				res.status(400)
 				return next(new Error('User is already created'))
 			}
 			
-			const user = new User({email, password})
+			const user = new User({email, password, type})
+			const accessToken = generateAccessToken(user._id)
+			const refreshToken = generateRefreshToken(user._id)
+			
 			await user.save();
 			
-			const token = generateToken(user._id)
-			res.status(201).json({token});
+			res.status(201).json({accessToken, refreshToken});
 		} catch(error) {
 			res.status(500)
 			return next(new Error('Server error'))
 		}
 	}
 )
+
+export default router

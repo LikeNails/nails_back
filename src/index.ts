@@ -1,5 +1,18 @@
 import app from './app'
 import mongoose from 'mongoose';
+import fs from 'fs';
+import path from 'path';
+import morgan from 'morgan';
+
+// Создаем поток записи для логов
+const logDirectory = path.join(__dirname, 'logs');
+if (!fs.existsSync(logDirectory)) {
+    fs.mkdirSync(logDirectory);
+}
+const accessLogStream = fs.createWriteStream(path.join(logDirectory, 'access.log'), { flags: 'a' });
+
+// Настройка morgan для записи в файл
+app.use(morgan('combined', { stream: accessLogStream }));
 
 const connectDB = async () => {
 	try {
