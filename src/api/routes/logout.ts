@@ -1,5 +1,5 @@
 import express, { NextFunction } from 'express'
-import User from '../../models/User'
+import { User } from '../../models/User'
 
 const router = express.Router()
 
@@ -11,7 +11,7 @@ type LogoutResponse = {
 	message: string;
 }
 
-router.post('logout', async (
+router.post('', async (
 	req: express.Request<{},{},LogoutRequestBody>,
 	res: express.Response<LogoutResponse>,
 	next: NextFunction,

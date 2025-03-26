@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import ErrorResponse from './api/types/ErrorResponse'
 import {AuthRequest} from './api/types/AuthRequest'
-import { Jwt, JwtPayload } from 'jsonwebtoken'
 import jwt from 'jsonwebtoken'
 
 export function notFound (
@@ -43,7 +42,7 @@ export function authMiddleware (
 		return(next(new Error('No auth token')))
 	}
 	try{
-		const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as JwtPayload
+		const decoded = jwt.verify(token, process.env.TOKEN_SECRET!) as jwt.JwtPayload
 		req.body.user_id = decoded.user_id
 		next()
 	}
@@ -51,3 +50,4 @@ export function authMiddleware (
 		next(new Error('Invalid or expired token'))
 	}
 }
+

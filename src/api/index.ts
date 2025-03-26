@@ -2,7 +2,7 @@ import express from 'express';
 import login from './routes/login';
 import logout from './routes/logout';
 import refresh from './routes/refresh'
-import register from './routes/register'
+import register from './routes/register/register'
 import test from './routes/test'
 import testb from './routes/testb'
 

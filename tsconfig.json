@@ -9,8 +9,8 @@
 		"sourceMap": true,
 		"moduleResolution": "node",
 		//нужныы, чтобы правильно обрабатывать импорты
-		"allowSyntheticDefaultImports": true, // позволяет работать с CommonJs, получаем объект
-		"esModuleInterop": true // уходим от * as , подменяем отсутствующий export default
+		"allowSyntheticDefaultImports": true,
+		"esModuleInterop": true,
 	},
 	"include": [
 		"src/**/*",
@@ -22,9 +22,4 @@
 		"*.tmp", 
 		"*.log"
 	],
-	"ts-node": {
-		"compilerOptions": {
-			"sourceMap": true
-		}
-	}
 }

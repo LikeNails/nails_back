@@ -1,22 +1,20 @@
 import express, { NextFunction } from 'express'
 import LoginRequestBody from '../types/Login/LoginRequestBody'
 import LoginResponse from '../types/Login/LoginResponse'
-import jwt from 'jsonwebtoken'
-import * as middlewares from '../../middlewares'
-import Requset from 'express'
-import User from '../../models/User'
+
+import { User } from '../../models/User'
 import { generateAccessToken, generateRefreshToken } from '../utils/generateToken'
 const router = express.Router()
 
 router.post(
-	'/login', 
+	'', 
 	async (
 		req: express.Request<{},{}, LoginRequestBody>,
 		res: express.Response<LoginResponse>,
 		next: NextFunction
 	) => {
 		try{
-			const {email, password} = req.body;
+			const {email, password} = req.body
 			const user = await User.findOne({email});
 			if(!user) {
 				res.status(401);
@@ -28,7 +26,6 @@ router.post(
 				res.status(401);
 				return next(new Error('Uncorrect email or password'))
 			}
-			
 			const accessToken = generateAccessToken(user._id)
 			const refreshToken = generateRefreshToken(user._id)
 			
@@ -38,7 +35,7 @@ router.post(
 			res.json({accessToken, refreshToken});
 		} catch(error){
 			res.status(500);
-			return next(new Error('Server error'))
+			return next(new Error(`Server error \n ${error}`))
 		}
 	}
 )
