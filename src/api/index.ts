@@ -1,5 +1,5 @@
 import express from 'express';
-import login from './routes/login';
+import login from './routes/login/login';
 import logout from './routes/logout';
 import refresh from './routes/refresh'
 import register from './routes/register/register'

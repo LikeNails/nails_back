@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, Model} from 'mongoose';
+import mongoose, { Types, Schema, Document, Model} from 'mongoose';
 import bcrypt from 'bcryptjs'
 import { kStringMaxLength } from 'buffer';
 
@@ -43,7 +43,7 @@ type TeacherInfo = {
 }
 
 export interface TUser extends Document, TUserMethods{
-	_id: mongoose.Types.ObjectId,
+	_id: mongoose.Schema.Types.ObjectId,
 	email: string,
 	bio?: TBio,
 	refresh_token?: string | null,
@@ -54,8 +54,7 @@ export interface TUser extends Document, TUserMethods{
 	teacher_info?: TeacherInfo,
 }
 
-const userSchema = new Schema<TUser>(
-{
+const userSchema = new Schema<TUser>({
 	email: {
 		type: String,
 		required: true,

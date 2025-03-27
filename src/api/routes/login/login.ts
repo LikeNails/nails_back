@@ -1,10 +1,18 @@
 import express, { NextFunction } from 'express'
-import LoginRequestBody from '../types/Login/LoginRequestBody'
-import LoginResponse from '../types/Login/LoginResponse'
-
-import { User } from '../../models/User'
-import { generateAccessToken, generateRefreshToken } from '../utils/generateToken'
+import { User } from '../../../models/User'
+import { generateAccessToken, generateRefreshToken } from '../../utils/generateToken'
+import { loginSchema } from './loginValidation'
 const router = express.Router()
+
+type LoginRequestBody = {
+	email: string,
+	password: string
+}
+
+type LoginResponse = {
+	accessToken: string,
+	refreshToken: string
+}
 
 router.post(
 	'', 
@@ -14,6 +22,12 @@ router.post(
 		next: NextFunction
 	) => {
 		try{
+		
+			const {error} = loginSchema.validate(req.body, { abortEarly: false})
+					if(error){
+						return next(new Error(`Ошибка валидации \n ${error}`))
+					}
+					
 			const {email, password} = req.body
 			const user = await User.findOne({email});
 			if(!user) {

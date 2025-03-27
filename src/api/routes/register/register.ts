@@ -36,10 +36,6 @@ router.post(
 				return next(new Error('User is already created'))
 			}
 			
-		
-			
-			
-			
 			const user = new User({email, password_hash: password, type, bio})
 			
 			if(type == 'student'){

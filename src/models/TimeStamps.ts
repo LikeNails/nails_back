@@ -7,8 +7,7 @@ type TTimeStamps = {
 	end_time: String
 }
 
-const timeStampsSchema = new Schema<TTimeStamps>(
-{
+const timeStampsSchema = new Schema<TTimeStamps>({
 	serial: {
 		type: Number,
 		required: true,
