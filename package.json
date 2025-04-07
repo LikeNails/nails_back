@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev": "nodemon --exec  ts-node src/index.ts",
+		"dev": "nodemon --exec ts-node src/index.ts",
 		"build": "tsc",
 		"start": "node dist/app.js",
 		"lint": "eslint . --ext .ts,.tsx,.js,.jsx",
@@ -39,6 +39,7 @@
 		"html-webpack-plugin": "^5.6.3",
 		"install": "^0.13.0",
 		"node": "^23.9.0",
+		"nodemon": "^3.1.9",
 		"prettier": "^3.5.3",
 		"ts-loader": "^9.5.2",
 		"ts-node": "^10.9.2",

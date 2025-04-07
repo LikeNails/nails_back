@@ -1,4 +1,3 @@
 export type RegisterResponse = {
-	accessToken: string,
+	accessToken: string
 }
-
