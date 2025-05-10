@@ -1,123 +1,112 @@
-import mongoose, { Types, Schema, Document, Model } from 'mongoose'
+import {
+	prop,
+	modelOptions,
+	DocumentType,
+	getModelForClass,
+	Ref,
+	pre,
+} from '@typegoose/typegoose'
+
+import RoleModel, { RoleType } from './Role'
 import bcrypt from 'bcryptjs'
-import { kStringMaxLength } from 'buffer'
 
-type TBio = {
-	first: string
-	second?: string
-	family: string
-}
+@pre<User>('save', async function () {
+	if (!this.isModified('password')) return
 
-type TUserMethods = {
-	comparePassword(candidatePassword: string): Promise<boolean>
-}
-
-type DayOfWeek =
-	| 'monday'
-	| 'tuesday'
-	| 'wednesday'
-	| 'thursday'
-	| 'friday'
-	| 'saturday'
-	| 'sunday'
-
-type Availability = {
-	[key in DayOfWeek]?: string[]
-}
-
-type Courses = {
-	course_id: String
-	course_name: String
-	hours_per_week: Number
-}
-
-interface Load extends Document {
-	max_hours_per_week: Number
-	courses: Courses
-}
-
-type TeacherInfo = {
-	specialization: string[]
-	availability: Availability
-	current_load: Load
-}
-
-export interface TUser extends Document, TUserMethods {
-	_id: mongoose.Schema.Types.ObjectId
-	email: string
-	bio?: TBio
-	refresh_token?: string | null
-	password: string
-	type: 'admin' | 'student' | 'teacher'
-	group?: number
-	created_at: Date
-	teacher_info?: TeacherInfo
-}
-
-const userSchema = new Schema<TUser>(
-	{
-		email: {
-			type: String,
-			required: true,
-			unique: true,
-		},
-		bio: {
-			first: String,
-			second: String,
-			family: String,
-		},
-		refresh_token: String,
-		password: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String,
-			required: true,
-		},
-		group: String,
-		created_at: Date,
-
-		teacher_info: {
-			specialization: {
-				type: Array(String),
-			},
-			availability: {
-				monday: String,
-				tuesday: String,
-				wednesday: String,
-				thursday: String,
-				friday: String,
-				saturday: String,
-				sunday: String,
-			},
-			current_load: {
-				max_hours_per_week: Number,
-				courses: {
-					course_id: String,
-					course_name: String,
-					hours_per_week: Number,
-				},
-			},
-		},
-	},
-	{
-		timestamps: true,
-	},
-)
-
-//Хэширование пароля
-userSchema.pre('save', async function (next) {
-	if (!this.isModified('password')) return next()
-	this.password = await bcrypt.hash(this.password, 10)
-	next()
+	const salt = await bcrypt.genSalt(10)
+	this.password = await bcrypt.hash(this.password, salt)
 })
+class User {
+	/**
+	 * Имя пользователя
+	 *
+	 * @type {string}
+	 */
+	@prop()
+	public first_name?: string
 
-//Метод сравнения паролей
-userSchema.methods.comparePassword = async function (
-	candidatePassword: string,
-) {
-	return await bcrypt.compare(candidatePassword, this.password)
+	/**
+	 * Фамилия пользователя
+	 *
+	 * @type {string}
+	 */
+	@prop()
+	public family_name?: string
+
+	/**
+	 * Пароль пользователя (в хэшированном виде)
+	 *
+	 * @type {string}
+	 * @required
+	 */
+	@prop({ required: true })
+	public password!: string
+
+	/**
+	 * Уникальный email пользователя
+	 *
+	 * @type {string}
+	 * @required
+	 * @unique
+	 */
+	@prop({ required: true, unique: true })
+	public email!: string
+
+	/**
+	 * Токен подтверждения аккаунта по почте
+	 *
+	 * @type {string}
+	 * @required
+	 * @unique
+	 */
+	@prop({ required: true, unique: true })
+	public email_confirm_token!: string
+
+	/**
+	 * Номер телефона (необязательное поле)
+	 *
+	 * @type {string | undefined}
+	 * @optional
+	 */
+	@prop()
+	public phone_number?: string
+
+	/**
+	 * Refresh token для восстановления сессии
+	 *
+	 * @type {string | undefined}
+	 * @optional
+	 */
+	@prop()
+	public refresh_token?: string | null
+
+	@prop({ ref: () => RoleModel, default: [] })
+	public roles?: Ref<RoleType>[]
+
+	get roleIds(): string[] {
+		return this.roles?.map((r) => r._id.toString()) || []
+	}
+
+	public async comparePassword(
+		this: UserType,
+		candidatePassword: string,
+	): Promise<boolean> {
+		return bcrypt.compare(candidatePassword, this.password)
+	}
 }
 
-export const User: Model<TUser> = mongoose.model<TUser>('User', userSchema)
+export type UserType = DocumentType<User>
+
+/**
+ * Модель пользователя
+ *
+ * Содержит следующие поля:
+ * - `email` *(string, required, unique)*
+ * - `password` *(string, required)*
+ * - `emain_confirm_token` *(string, required, unique)*
+ * - `phone_number` *(string, optional)*
+ * - `refresh_token` *(string, optional)*
+ * - `roles` *(Ref<RoleType>[], optional)*
+ *
+ */
+export const UserModel = getModelForClass(User)

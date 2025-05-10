@@ -11,15 +11,9 @@
 		//нужныы, чтобы правильно обрабатывать импорты
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true
 	},
-	"include": [
-		"src/**/*",
-		"./*.js"
-	],
-	"exclude": [
-		"node_modules", 
-		"dist", 
-		"*.tmp", 
-		"*.log"
-	],
+	"include": ["src/**/*", "./*.js"],
+	"exclude": ["node_modules", "dist", "*.tmp", "*.log"]
 }

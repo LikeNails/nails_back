@@ -1,13 +1,16 @@
 import express, { NextFunction } from 'express'
-import { UserModel, UserType } from '../../../models/User'
+import { UserModel, UserType } from '../../../../models/User'
 import {
 	generateAccessToken,
 	generateRefreshToken,
-} from '../../utils/generateToken'
-import { RegisterResponse } from './registerTypes'
-import { registerSchema } from './registerValidation'
-import { sendConfirmationMail } from '../../utils/mail/sendEmail'
+} from '../../../utils/generateToken'
+import { registerSchema } from '../../register/registerValidation'
+import { sendConfirmationMail } from '../../../utils/mail/sendEmail'
+import RoleModel, { RoleType } from '../../../../models/Role'
 
+type RegisterResponse = {
+	status: boolean
+}
 const router = express.Router()
 
 router.post(
@@ -42,6 +45,16 @@ router.post(
 				family_name,
 			})
 
+			const userRole: RoleType | null = await RoleModel.findOne({
+				value: 'MASTER',
+			})
+
+			if (userRole) {
+				user.roles = [...(user.roles || []), userRole.id]
+			} else {
+				throw new Error('Роль мастера не создана в базе данных')
+			}
+
 			const accessToken = generateAccessToken(user.id)
 			const refreshToken = generateRefreshToken(user.id)
 
@@ -65,7 +78,7 @@ router.post(
 
 			await user.save()
 
-			res.status(201).json({ accessToken })
+			res.status(201).json({ status: true })
 		} catch (error) {
 			res.status(500)
 			return next(new Error(`Server error \n ${error}`))

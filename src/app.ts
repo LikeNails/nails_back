@@ -24,10 +24,9 @@ const accessLogStream = fs.createWriteStream(
 
 // Настройка morgan для записи в файл
 app.use(morgan('combined', { stream: accessLogStream }))
+app.use(morgan('dev'))
 
 app.use(express.json())
-app.use(morgan('combined', { stream: accessLogStream }))
-app.use(morgan('dev'))
 app.use(helmet())
 app.use(cors())
 

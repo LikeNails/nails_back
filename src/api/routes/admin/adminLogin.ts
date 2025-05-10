@@ -4,7 +4,6 @@ import {
 	generateAccessToken,
 	generateRefreshToken,
 } from '../../utils/generateToken'
-import { loginSchema } from './loginValidation'
 const router = express.Router()
 
 type LoginRequestBody = {
@@ -25,13 +24,6 @@ router.post(
 		next: NextFunction,
 	) => {
 		try {
-			const { error } = loginSchema.validate(req.body, {
-				abortEarly: false,
-			})
-			if (error) {
-				return next(new Error(`Ошибка валидации \n ${error}`))
-			}
-
 			const { email, password } = req.body
 			const user = await UserModel.findOne({ email })
 			if (!user) {

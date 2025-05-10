@@ -1,11 +1,7 @@
 import express, { NextFunction } from 'express'
-import { User } from '../../models/User'
+import { UserModel } from '../../models/User'
 
 const router = express.Router()
-
-type LogoutRequestBody = {
-	refresh_token: string
-}
 
 type LogoutResponse = {
 	message: string
@@ -14,28 +10,25 @@ type LogoutResponse = {
 router.post(
 	'',
 	async (
-		req: express.Request<{}, {}, LogoutRequestBody>,
+		req: express.Request,
 		res: express.Response<LogoutResponse>,
 		next: NextFunction,
 	) => {
 		try {
-			const { refresh_token } = req.body
-
-			if (!refresh_token) {
-				res.status(400)
-				return next(new Error('No refresh token provided'))
-			}
-
-			const user = await User.findOne({ refresh_token })
+			const { id } = req.user!
+			console.log(id)
+			const user = await UserModel.findById(id)
+			console.log(user)
 			if (user) {
 				user.refresh_token = null
 				await user.save()
+				res.status(200).json({ message: 'Logged out successfully' })
+			} else {
+				throw new Error('Пользователь не найден')
 			}
-
-			res.status(200).json({ message: 'Logged out successfully' })
 		} catch (error) {
 			res.status(500)
-			return next(new Error('Server error'))
+			return next(new Error(`Can't logout \n ${error}`))
 		}
 	},
 )
