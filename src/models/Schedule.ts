@@ -7,13 +7,14 @@ import {
 	getModelForClass,
 	Ref,
 } from '@typegoose/typegoose'
+
 import { UserModel, UserType } from './User'
 
 class Schedule {
-	@prop({ required: true, unique: true })
+	@prop({ required: true })
 	public timeslots!: number[]
 
-	@prop({ ref: () => UserModel, required: true })
+	@prop({ ref: 'User', required: true })
 	public master!: Ref<UserType>
 }
 

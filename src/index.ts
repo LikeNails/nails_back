@@ -1,6 +1,5 @@
 import app from './app'
 import mongoose from 'mongoose'
-
 // Создаем поток записи для логов
 
 const connectDB = async () => {

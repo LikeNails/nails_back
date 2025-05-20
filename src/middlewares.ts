@@ -19,14 +19,6 @@ declare global {
 	}
 }
 
-// function getRoleValues(roles: Ref<RoleType>[]): string[] {
-// 	return roles.map((role): string => {
-// 		if (typeof role === 'string') return role
-// 		if ('value' in role) return role.value
-// 		return ''
-// 	})
-// }
-
 export function notFound(req: Request, res: Response, next: NextFunction) {
 	res.status(404)
 	const error = new Error(`Not Found - ${req.originalUrl}`)
@@ -85,7 +77,7 @@ export async function authMiddleware(
 export const roleMiddleware = (allowedRoles: string[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		if (!req.user) {
-			return next(new Error('Нужно авторизоваться'))
+			return next(new Error('Need to authorize'))
 		}
 
 		const userRoles = req.user.roles || []

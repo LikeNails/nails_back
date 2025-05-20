@@ -32,6 +32,8 @@ app.use(cors())
 
 app.use('/api/v1', api)
 
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
+
 app.use(middlewares.errorHandler)
 app.use(middlewares.notFound)
 

@@ -1,15 +1,16 @@
 import express from 'express'
-import login from './routes/login/login'
-import logout from './routes/logout'
-import refresh from './routes/refresh'
-import register from './routes/register/register'
-import test from './routes/test'
-import testb from './routes/testb'
-import confirmEmail from './routes/emailConfirm/emailConfirm'
-import adminRouter from './routes/admin/index'
-
+import login from './modules/base/login/login'
+import logout from './modules/base/logout'
+import refresh from './modules/base/refresh'
+import register from './modules/base/register/register'
+import test from './modules/base/test'
+import testb from './modules/base/testb'
+import confirmEmail from './modules/base/emailConfirm/emailConfirm'
+import adminRouter from './modules/admin/index'
+import offerRouter from './modules/base/offer/index'
 import { authMiddleware, roleMiddleware } from '../middlewares'
-
+import masterRouter from './modules/base/master/index'
+import meRouter from './modules/base/me'
 const router = express.Router()
 
 router.use('/admin', adminRouter)
@@ -25,5 +26,13 @@ router.use(
 router.use('/refresh', refresh)
 router.use('/test', test)
 router.use('/testb', testb)
+router.use('/offer', offerRouter)
+router.use('/master', masterRouter)
+router.use(
+	'/me',
+	authMiddleware,
+	roleMiddleware(['USER', 'ADMIN', 'MASTER']),
+	meRouter,
+)
 
 export default router

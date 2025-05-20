@@ -6,16 +6,19 @@ import {
 	Ref,
 } from '@typegoose/typegoose'
 
-import { UserModel } from './User'
-import ServiceModel from './Services'
-import { ServiceType } from './Services'
+import { UserModel, UserType } from './User'
+import ServiceModel from './Service'
+import { ServiceType } from './Service'
 
 class MasterServicePrice {
 	@prop({ required: true })
 	public price!: number
 
-	@prop({ ref: () => ServiceModel, required: true })
-	public services!: Ref<ServiceType>[]
+	@prop({ ref: 'ServiceModel', required: true })
+	public service!: Ref<ServiceType>[]
+
+	@prop({ ref: 'UserModel', required: true })
+	public master!: Ref<UserType>[]
 }
 
 export type MasterServicePriceType = DocumentType<MasterServicePrice>

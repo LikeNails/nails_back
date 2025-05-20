@@ -7,7 +7,10 @@ import {
 
 class Timeslot {
 	@prop({ required: true, unique: true })
-	public value!: string
+	public start!: string
+
+	@prop({ required: true, unique: true })
+	public end!: string
 
 	@prop({ required: true, unique: true })
 	public order!: number

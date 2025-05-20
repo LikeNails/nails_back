@@ -36,8 +36,11 @@ class Month {
 	@prop({ required: true })
 	public name!: MonthNames
 
-	@prop({ ref: () => UserModel, required: true })
-	public user!: Ref<UserType>
+	@prop({ ref: 'User', required: true })
+	public master!: Ref<UserType>
+
+	@prop({ required: true })
+	public number!: number
 }
 
 export type MonthType = DocumentType<Month>
