@@ -11,6 +11,7 @@ import offerRouter from './modules/base/offer/index'
 import { authMiddleware, roleMiddleware } from '../middlewares'
 import masterRouter from './modules/base/master/index'
 import meRouter from './modules/base/me'
+import masterImageRouter from './modules/base/masterImages'
 const router = express.Router()
 
 router.use('/admin', adminRouter)
@@ -34,5 +35,7 @@ router.use(
 	roleMiddleware(['USER', 'ADMIN', 'MASTER']),
 	meRouter,
 )
+
+router.use('/master-image', masterImageRouter)
 
 export default router

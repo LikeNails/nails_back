@@ -70,6 +70,7 @@ export async function authMiddleware(
 
 		next()
 	} catch (error) {
+		res.status(401)
 		next(new Error(`Invalid or expired token ${error}`))
 	}
 }

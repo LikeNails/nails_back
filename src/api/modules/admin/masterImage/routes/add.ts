@@ -66,6 +66,7 @@ router.post(
 				const masterImage = new MasterImageModel({
 					master: master,
 					image: image,
+					imageUrl: `/uploads/${req.file.filename}`,
 				})
 
 				masterImage.save()

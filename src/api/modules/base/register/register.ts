@@ -47,7 +47,7 @@ router.post(
 
 			const email_confirm_token = Math.random().toString(36).split('.')[1]
 
-			const confirmationMail = `http://127.0.0.1:3000/api/v1/confirm-email/${email_confirm_token}`
+			const confirmationMail = `http://127.0.0.1:5000/api/v1/confirm-email/${email_confirm_token}`
 
 			const confirmationSend = await sendConfirmationMail(
 				confirmationMail,

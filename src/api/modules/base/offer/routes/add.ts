@@ -18,6 +18,10 @@ type addRequestDTO = {
 	monthId: string
 	userId: string
 	day: number
+	masterId: string
+	monthNumber: number
+	yearNumber: number
+	time: string
 }
 
 router.post(
@@ -28,13 +32,22 @@ router.post(
 		next: express.NextFunction,
 	) => {
 		try {
-			const { error } = addSchema.validate(req.body, {
-				abortEarly: false,
-			})
-			if (error) {
-				return next(new Error(`Ошибка валидации \n ${error}`))
-			}
-			const { scheduleId, timeslotId, monthId, day } = req.body
+			// const { error } = addSchema.validate(req.body, {
+			// 	abortEarly: false,
+			// })
+			// if (error) {
+			// 	return next(new Error(`Ошибка валидации \n ${error}`))
+			// }
+			const {
+				scheduleId,
+				timeslotId,
+				monthId,
+				day,
+				masterId,
+				monthNumber,
+				yearNumber,
+				time,
+			} = req.body
 
 			if (!req.user) {
 				throw new Error('Need to authorize')
@@ -60,6 +73,10 @@ router.post(
 						month: month,
 						user: user,
 						day: day,
+						master: masterId,
+						monthNumber: monthNumber,
+						yearNumber: yearNumber,
+						time: time,
 					})
 
 					if (await offer.save()) {

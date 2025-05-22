@@ -6,7 +6,7 @@ import MasterServicePriceModel from '../../../../../models/MasterServicePrice'
 const router = express.Router()
 
 type deleteServiceRequestDTO = {
-	serviceId: string
+	modelId: string
 }
 
 type deleteMonthResponseDTO = {
@@ -28,12 +28,14 @@ router.post(
 			if (error) {
 				return next(new Error(`Ошибка валидации \n ${error}`))
 			}
-			const { serviceId } = req.body
+			const { modelId } = req.body
+			console.log(modelId)
 
-			const service = await ServiceModel.findById(serviceId)
+			const service = await ServiceModel.findById(modelId)
+			console.log(service)
 
 			const servicePrices = await MasterServicePriceModel.find({
-				service: serviceId,
+				service: modelId,
 			})
 
 			if (servicePrices.length > 0) {
@@ -46,7 +48,8 @@ router.post(
 			}
 
 			if (service) {
-				const { acknowledged, deletedCount } = service.deleteOne()
+				const { acknowledged, deletedCount } = await service.deleteOne()
+				console.log(acknowledged)
 				res.status(201).json({
 					acknowledged: acknowledged,
 					deletedCount: deletedCount,

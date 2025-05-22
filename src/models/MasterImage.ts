@@ -15,6 +15,9 @@ class MasterImage {
 
 	@prop({ ref: 'Image', required: true })
 	public image!: Ref<ImageType>
+
+	@prop({ required: true })
+	public imageUrl!: string
 }
 
 export type MasterImageType = DocumentType<MasterImage>

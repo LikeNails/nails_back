@@ -8,6 +8,7 @@ import path from 'path'
 // import webpack_middleware from 'webpack-dev-middleware';
 import * as middlewares from './middlewares'
 import api from './api/index'
+import upload from '../multerConfig'
 
 require('dotenv').config()
 
@@ -28,12 +29,40 @@ app.use(morgan('dev'))
 
 app.use(express.json())
 app.use(helmet())
-app.use(cors())
+const corsOptions = {
+	origin: function (origin: any, callback: any) {
+		const allowedOrigins = [
+			'http://localhost:3000',
+			'http://localhost:4200',
+			'http://localhost:4300',
+		]
+
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true)
+		} else {
+			callback(new Error('Not allowed by CORS'))
+		}
+	},
+	optionsSuccessStatus: 200,
+	credentials: true,
+}
+
+app.use(cors(corsOptions))
 
 app.use('/api/v1', api)
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')))
-
+app.post('/upload', upload.single('image'), (req, res) => {
+	if (!req.file) {
+		return res
+			.status(400)
+			.send({ success: false, error: 'Файл не загружен' })
+	}
+	res.send({
+		success: true,
+		fileUrl: `/uploads/${req.file.filename}`,
+	})
+})
 app.use(middlewares.errorHandler)
 app.use(middlewares.notFound)
 

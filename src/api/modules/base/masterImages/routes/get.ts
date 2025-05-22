@@ -1,7 +1,5 @@
 import express from 'express'
 
-import { OfferModel } from '../../../../../models/Offer'
-
 import { Model } from 'mongoose'
 import { MasterImageModel } from '../../../../../models/MasterImage'
 const router = express.Router()
@@ -14,13 +12,7 @@ router.post(
 		next: express.NextFunction,
 	) => {
 		try {
-			if (!req.user) {
-				throw new Error('Need to authorize')
-			}
-
-			const user = req.user
-
-			const modelsArray = await OfferModel.find({ user: user.id })
+			const modelsArray = await MasterImageModel.find()
 
 			if (modelsArray && modelsArray.length > 0) {
 				res.status(200).json({

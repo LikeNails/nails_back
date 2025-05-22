@@ -17,6 +17,10 @@ export const addSchema = Joi.object({
 		'string.base': 'Поле должно быть строкой',
 		'any.required': 'Поле обязательно',
 	}),
+	masterId: Joi.string().required().messages({
+		'string.base': 'Поле должно быть строкой',
+		'any.required': 'Поле обязательно',
+	}),
 	day: Joi.number().required().messages({
 		'number.base': 'Поле должно быть числом',
 		'any.required': 'Поле обязательно',

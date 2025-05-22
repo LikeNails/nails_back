@@ -24,8 +24,20 @@ class Offer {
 	@prop({ ref: () => UserModel, required: true })
 	public user!: Ref<UserType>
 
+	@prop({ ref: () => UserModel, required: true })
+	public master!: Ref<UserType>
+
 	@prop({ required: true })
 	public day!: number
+
+	@prop({ required: true })
+	public monthNumber!: number
+
+	@prop({ required: true })
+	public yearNumber!: number
+
+	@prop({ required: true })
+	public time!: string
 }
 
 export type OfferType = DocumentType<Offer>

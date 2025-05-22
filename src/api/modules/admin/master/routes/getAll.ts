@@ -7,19 +7,16 @@ import {
 
 import RoleModel, { RoleType } from '../../../../../models/Role'
 
-type GetAllResponse = {
-	masters: UserType[]
-}
+// type GetAllResponse = {
+// 	masters: UserType[]
+// }
 const router = express.Router()
 
 router.post(
 	'',
-	async (
-		req: express.Request,
-		res: express.Response<GetAllResponse>,
-		next: NextFunction,
-	) => {
+	async (req: express.Request, res: express.Response, next: NextFunction) => {
 		try {
+			const { pagination, pageNumber } = req.body
 			const masterRole = await RoleModel.findOne({ value: 'MASTER' })
 			if (!masterRole) {
 				throw new Error('Master role is not created yet')
@@ -34,7 +31,20 @@ router.post(
 					{ roles: { $ne: adminRole._id } },
 				],
 			})
-			res.status(201).json({ masters: masters })
+			if (masters && masters.length > 0) {
+				const mastersArrayPaginated = masters.slice(
+					pageNumber * pagination,
+					pageNumber * pagination + pagination,
+				)
+
+				const pagesCount = Math.ceil(masters.length / pagination)
+				if (mastersArrayPaginated.length > 0) {
+					res.status(201).json({
+						masters: mastersArrayPaginated,
+						pagesCount: pagesCount,
+					})
+				}
+			}
 		} catch (error) {
 			res.status(500)
 			return next(new Error(`Server error \n ${error}`))
